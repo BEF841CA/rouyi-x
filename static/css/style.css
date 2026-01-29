@@ -533,6 +533,7 @@ select:focus {
 
 
 
+
 /* 美化下拉选单整体样式 */
 .select-wrapper {
     position: relative;
@@ -573,17 +574,18 @@ select:focus + .select-icon::after {
 input,
 select {
     width: 100%;
-    padding: 16px 45px 16px 20px;
+    padding: 18px 50px 18px 25px;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
-    font-size: 16px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    font-size: 17px;
     background-color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
 }
 
 input:focus,
@@ -591,18 +593,17 @@ select:focus {
     border-color: #4cc9f0;
     outline: none;
     background-color: #fff;
-    box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.15), 0 8px 25px rgba(76, 201, 240, 0.2);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.2), 0 8px 20px rgba(76, 201, 240, 0.2);
 }
 
 /* 美化选项样式 */
 select option {
-    padding: 12px 20px;
+    padding: 18px 25px;
     background: white;
     color: #2c3e50;
-    font-size: 15px;
-    border-bottom: 1px solid #f0f0f0;
-    transition: all 0.2s ease;
+    font-size: 17px;
+    border-bottom: 2px solid #f0f0f0;
+    cursor: pointer;
 }
 
 select option:last-child {
@@ -610,40 +611,46 @@ select option:last-child {
 }
 
 select option:hover {
-    background: linear-gradient(90deg, #e3f2fd, #bbdefb);
+    background: #e3f2fd;
     color: #1976d2;
 }
 
 select option:checked {
-    background: linear-gradient(90deg, #4cc9f0, #4361ee);
+    background: #4cc9f0;
     color: white;
     font-weight: 600;
 }
 
-/* 加载状态美化 */
-select:disabled {
-    background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
-    background-size: 200% 100%;
-    animation: loadingShimmer 1.5s infinite;
-    color: #6c757d;
-    cursor: not-allowed;
-    opacity: 0.8;
-    transform: none;
+/* 特殊选项样式 */
+select option[style*="color: rgb(25, 118, 210)"] {
+    border-left: 4px solid #1976d2;
 }
 
-@keyframes loadingShimmer {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+select option[style*="color: rgb(46, 125, 50)"] {
+    border-left: 4px solid #2e7d32;
+}
+
+select option[style*="color: rgb(123, 31, 162)"] {
+    border-left: 4px solid #7b1fa2;
+}
+
+/* 加载状态美化 */
+select:disabled {
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: wait;
+    opacity: 0.7;
+    border-color: #ced4da;
 }
 
 /* 空状态美化 */
 select:empty {
     color: #adb5bd;
     font-style: italic;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2'%3E%3Cpath d='M12 5v14M5 12h14'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
 }
 
 /* 特定选择框样式 */
@@ -672,71 +679,42 @@ select:empty {
 }
 
 .select-wrapper:hover .select-decoration {
-    opacity: 1;
+    opacity: 0.6;
+    border: 2px solid rgba(76, 201, 240, 0.2);
 }
 
 /* 选中状态的特殊样式 */
 select:focus ~ .select-decoration {
     opacity: 1;
-    background: linear-gradient(120deg, 
-        rgba(76, 201, 240, 0.2) 0%, 
-        rgba(67, 97, 238, 0.2) 50%, 
-        rgba(76, 201, 240, 0.2) 100%);
-    animation: glowPulse 2s ease-in-out infinite alternate;
+    background: rgba(76, 201, 240, 0.2);
+    box-shadow: 0 0 15px rgba(76, 201, 240, 0.3);
 }
 
-@keyframes glowPulse {
-    0% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 0.6;
-        transform: scale(1.02);
-    }
-}
 
-/* 选项悬停效果增强 */
-select option {
-    position: relative;
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-select option:hover {
-    transform: translateX(5px);
-    box-shadow: 2px 2px 8px rgba(76, 201, 240, 0.3);
-}
 
 /* 推荐选项特殊样式 */
-select option[style*="bold"] {
+select option[style*="font-weight: 600"] {
     position: relative;
-}
-
-select option[style*="bold"]::before {
-    content: '⭐';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
 }
 
 /* 禁用选项样式 */
 select option:disabled {
     cursor: not-allowed;
     opacity: 0.7;
+    background: #f8f9fa !important;
+    color: #6c757d !important;
 }
 
 /* 响应式下拉菜单优化 */
 @media (max-width: 768px) {
     select {
-        padding: 14px 40px 14px 16px;
-        font-size: 15px;
+        padding: 16px 45px 16px 20px;
+        font-size: 16px;
     }
     
     select option {
-        padding: 10px 16px;
-        font-size: 14px;
+        padding: 15px 22px;
+        font-size: 15px;
     }
     
     .select-icon {
@@ -745,7 +723,7 @@ select option:disabled {
     }
 }
 
-/* 深色模式支持（如果需要） */
+/* 深色模式支持 */
 @media (prefers-color-scheme: dark) {
     select option {
         background: #2d3748;
@@ -753,13 +731,28 @@ select option:disabled {
     }
     
     select option:hover {
-        background: linear-gradient(90deg, #4a5568, #2d3748);
+        background: #4a5568;
         color: #63b3ed;
     }
     
     select option:checked {
-        background: linear-gradient(90deg, #4cc9f0, #4361ee);
+        background: #4cc9f0;
         color: white;
+    }
+    
+    select option[style*="color: rgb(25, 118, 210)"] {
+        background: #1a237e;
+        color: #bbdefb;
+    }
+    
+    select option[style*="color: rgb(46, 125, 50)"] {
+        background: #1b5e20;
+        color: #c8e6c9;
+    }
+    
+    select option[style*="color: rgb(123, 31, 162)"] {
+        background: #4a148c;
+        color: #e1bee7;
     }
 }
 

@@ -153,12 +153,12 @@ async function loadTags(repo) {
                 
                 // 美化选项显示
                 if (index === 0) {
-                    opt.textContent = `⭐ ${tag.name} (推荐版本)`;
+                    opt.textContent = tag.name;
                     opt.style.fontWeight = '600';
                     opt.style.color = '#1976d2';
                     opt.style.backgroundColor = '#e3f2fd';
                 } else {
-                    opt.textContent = `🏷 ${tag.name}`;
+                    opt.textContent = tag.name;
                     opt.style.color = '#2c3e50';
                 }
                 
@@ -236,17 +236,17 @@ async function loadBranches(repo) {
                 
                 // 美化选项显示
                 if (isDefault) {
-                    opt.textContent = `🎯 ${branch.name} (默认分支)`;
+                    opt.textContent = branch.name;
                     opt.style.fontWeight = '600';
                     opt.style.color = '#2e7d32';
                     opt.style.backgroundColor = '#e8f5e8';
                 } else if (isRecommended) {
-                    opt.textContent = `⭐ ${branch.name} (推荐分支)`;
+                    opt.textContent = branch.name;
                     opt.style.fontWeight = '600';
                     opt.style.color = '#7b1fa2';
                     opt.style.backgroundColor = '#f3e5f5';
                 } else {
-                    opt.textContent = `🌿 ${branch.name}`;
+                    opt.textContent = branch.name;
                     opt.style.color = '#2c3e50';
                 }
                 
