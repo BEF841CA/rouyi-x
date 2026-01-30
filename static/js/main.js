@@ -1,3 +1,4 @@
+let selectedProjectId = '';
 let selectedRepo = '';
 let selectedProjectName = '';
 let selectedProjectDescription = ''
@@ -13,7 +14,6 @@ const branchGroup = document.getElementById('branchGroup');
 const nextStep2Btn = document.querySelector('.step-content[data-step="2"] .next-step');
 const prevStep2Btn = document.querySelector('.step-content[data-step="2"] .prev-step');
 const prevStep3Btn = document.querySelector('.step-content[data-step="3"] .prev-step');
-const form = document.querySelector('#wizardForm');
 const progressFill = document.getElementById('progressFill');
 
 // 更新已选择项目信息显示
@@ -92,7 +92,7 @@ async function loadProjects() {
                 selectedRepo = p.repo;
                 selectedProjectName = p.name;
                 selectedProjectDescription = p.description;
-
+                selectedProjectId = p.id
 
                 // 自动进入下一步
                 setTimeout(() => {
@@ -110,7 +110,6 @@ async function loadProjects() {
                 <div style="font-size: 14px; margin-top: 10px;">${err.message}</div>
             </div>
         `;
-        console.error(err);
     }
 }
 
@@ -129,7 +128,7 @@ async function loadTags(repo) {
     tagSelect.innerHTML = '';
 
     try {
-        const res = await fetch(`/api/tags?repo=${encodeURIComponent(repo)}`);
+        const res = await fetch(`/api/tags?project_id=${selectedProjectId}`);
         if (!res.ok) {
             let errorMsg = '获取版本信息失败';
             if (res.status === 404) {
@@ -150,18 +149,9 @@ async function loadTags(repo) {
             tags.slice(0, 30).forEach((tag, index) => {
                 const opt = document.createElement('option');
                 opt.value = tag.name;
-                
-                // 美化选项显示
-                if (index === 0) {
-                    opt.textContent = tag.name;
-                    opt.style.fontWeight = '600';
-                    opt.style.color = '#1976d2';
-                    opt.style.backgroundColor = '#e3f2fd';
-                } else {
-                    opt.textContent = tag.name;
-                    opt.style.color = '#2c3e50';
-                }
-                
+                opt.textContent = tag.name;
+                opt.style.color = '#2c3e50';
+
                 tagSelect.appendChild(opt);
 
                 // 默认选中第一个tag
@@ -187,7 +177,7 @@ async function loadTags(repo) {
         opt.style.color = '#dc3545';
         tagSelect.appendChild(opt);
         nextStep2Btn.disabled = true;
-        
+
         // 提供更友好的错误信息
         let userFriendlyMessage = err.message;
         if (err.message.includes('fetch')) {
@@ -208,7 +198,7 @@ async function loadBranches(repo) {
     branchSelect.innerHTML = '';
 
     try {
-        const res = await fetch(`/api/branches?repo=${encodeURIComponent(repo)}`);
+        const res = await fetch(`/api/branches?project_id=${selectedProjectId}`);
         if (!res.ok) {
             let errorMsg = '获取分支信息失败';
             if (res.status === 404) {
@@ -229,31 +219,13 @@ async function loadBranches(repo) {
             branches.slice(0, 30).forEach((branch, index) => {
                 const opt = document.createElement('option');
                 opt.value = branch.name;
-                
-                // 标记默认分支
-                const isDefault = branch.name === 'master' || branch.name === 'main';
-                const isRecommended = index === 0 && !isDefault;
-                
-                // 美化选项显示
-                if (isDefault) {
-                    opt.textContent = branch.name;
-                    opt.style.fontWeight = '600';
-                    opt.style.color = '#2e7d32';
-                    opt.style.backgroundColor = '#e8f5e8';
-                } else if (isRecommended) {
-                    opt.textContent = branch.name;
-                    opt.style.fontWeight = '600';
-                    opt.style.color = '#7b1fa2';
-                    opt.style.backgroundColor = '#f3e5f5';
-                } else {
-                    opt.textContent = branch.name;
-                    opt.style.color = '#2c3e50';
-                }
-                
+                opt.textContent = branch.name;
+                opt.style.color = '#2c3e50';
+
                 branchSelect.appendChild(opt);
 
                 // 默认选中优先级：master/main > 第一个分支
-                if (isDefault || (index === 0 && !hasValidBranches)) {
+                if (branch.name === 'master' || branch.name === 'main' || (index === 0 && !hasValidBranches)) {
                     branchSelect.value = branch.name;
                     nextStep2Btn.disabled = false;
                     hasValidBranches = true;
@@ -275,7 +247,7 @@ async function loadBranches(repo) {
         opt.style.color = '#dc3545';
         branchSelect.appendChild(opt);
         nextStep2Btn.disabled = true;
-        
+
         let userFriendlyMessage = err.message;
         if (err.message.includes('fetch')) {
             userFriendlyMessage = '网络连接异常，请检查网络后重试';
@@ -409,15 +381,6 @@ function showError(title, message) {
     cancelBtn.addEventListener('click', closeError);
     overlay.addEventListener('click', closeError);
 
-    // ESC键关闭
-    const handleEsc = (e) => {
-        if (e.key === 'Escape') {
-            closeError();
-            document.removeEventListener('keydown', handleEsc);
-        }
-    };
-    document.addEventListener('keydown', handleEsc);
-
     // 添加入场动画延迟
     setTimeout(() => {
         modal.classList.add('error-modal-visible');
@@ -429,47 +392,93 @@ function showError(title, message) {
     }, 300);
 }
 
-// 表单提交
-if (form) {
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+// 下载提交按钮点击事件
+const submitBtn = document.querySelector('.submit-btn');
+if (submitBtn) {
+    submitBtn.addEventListener('click', async () => {
+        // 获取表单数据
+        const projectName = document.getElementById('projectName')?.value.trim();
+        const packageName = document.getElementById('packageName')?.value.trim();
+        const artifactId = document.getElementById('artifactId')?.value.trim();
+        const groupId = document.getElementById('groupId')?.value.trim();
+        const siteName = document.getElementById('siteName')?.value.trim();
 
-        const newProjectName = document.getElementById('newProjectName')?.value.trim();
-        const newPackageName = document.getElementById('newPackageName')?.value.trim();
-
-        if (!selectedRepo || !selectedProjectVersion || !newProjectName || !newPackageName) {
+        // 验证必填字段
+        if (!selectedProjectId || !selectedProjectVersion || !projectName || !packageName || !artifactId || !groupId || !siteName) {
             showError('信息不完整', '请填写所有必填信息！');
             return;
         }
 
         // 验证包名格式
-        if (!/^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$/.test(newPackageName)) {
+        if (!/^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$/.test(packageName)) {
             showError('包名格式错误', '包名应符合 Java 包名规范，如 com.company.project');
             return;
         }
 
-        try {
-            const formData = new FormData();
-            formData.append('repo', selectedRepo);
-            formData.append('version', selectedProjectVersion);
-            formData.append('version_type', selectedProjectVersionType);
-            formData.append('new_project_name', newProjectName);
-            formData.append('new_package', newPackageName);
+        // 构造JSON数据
+        const requestData = {
+            id: selectedProjectId,
+            version: selectedProjectVersion,
+            version_type: selectedProjectVersionType,
+            project_name: projectName,
+            package_name: packageName,
+            artifact_id: artifactId,
+            group_id: groupId,
+            site_name: siteName
+        };
 
-            const res = await fetch('/process', {
+        // 禁用提交按钮
+        const submitBtn = document.querySelector('.submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+            <span class="processing-spinner"></span>
+            <span>处理中...</span>
+        `;
+        }
+
+        try {
+            // 发送JSON格式的POST请求
+            const res = await fetch('/api/download', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
             });
 
             if (res.ok) {
-                // 处理成功逻辑
+                // 获取文件名
+                const contentDisposition = res.headers.get('Content-Disposition');
+                let filename = `${projectName}.zip`;
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
             } else {
-                // 处理错误逻辑
+                showError('系统异常', '请稍后再试');
             }
-        } catch (err) {
-            // 错误处理
+        } catch (error) {
+            showError('网络错误', '请检查网络连接后重试');
         }
 
+        // 恢复提交按钮
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '下载';
+        }
     });
 }
 

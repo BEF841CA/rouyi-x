@@ -55,7 +55,7 @@
             <h2 class="step-title"><span class="step-icon icon-code-branch"></span> 选择版本</h2>
             <p class="step-description">请选择项目的目标版本 (GitHub Tag 或 Branch)</p>
         </div>
-        
+
         <!-- 上一步选择的项目信息展示 -->
         <div class="info-display">
             <div class="info-header">
@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 类型选择 -->
         <div class="form-group">
             <label>
@@ -92,7 +92,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Tag选择 -->
         <div class="form-group" id="tagGroup">
             <label for="tagSelect">
@@ -104,12 +104,8 @@
                 </select>
                 <span class="select-icon"></span>
             </div>
-            <div class="example">
-                <span class="example-icon"></span>
-                基于所选项目的 GitHub 发布版本，建议选择最新的稳定版本
-            </div>
         </div>
-        
+
         <!-- Branch选择 -->
         <div class="form-group" id="branchGroup" style="display: none;">
             <label for="branchSelect">
@@ -122,18 +118,14 @@
                 <span class="select-icon"></span>
                 <div class="select-decoration"></div>
             </div>
-            <div class="example">
-                <span class="example-icon"></span>
-                基于所选项目的 GitHub 分支，通常是开发中的最新代码
-            </div>
         </div>
-        
+
         <div class="form-actions">
             <button type="button" class="btn btn-secondary prev-step">
-                ← 上一步
+                上一步
             </button>
             <button type="button" class="btn btn-primary next-step" disabled>
-                下一步 →
+                下一步
             </button>
         </div>
     </div>
@@ -144,7 +136,7 @@
             <h2 class="step-title"><span class="step-icon">✏️</span> 配置信息</h2>
             <p class="step-description">请填写您的自定义项目信息</p>
         </div>
-        
+
         <!-- 项目配置信息展示 -->
         <div class="info-display compact">
             <div class="info-header compact">
@@ -167,51 +159,48 @@
             </div>
         </div>
         
-        <form id="wizardForm">
-            <div class="form-group">
-                <label for="newProjectName">
-                    <span class="label-icon">🏗️</span> 新项目名
-                </label>
-                <input type="text" id="newProjectName" placeholder="my-admin" required />
-                <div class="example">
-                    <span class="example-icon"></span>
-                    用于替换 pom.xml、README 等文件中的项目名称
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="newPackageName">
-                    <span class="label-icon">📦</span> 新包名
-                </label>
-                <input type="text" id="newPackageName" placeholder="com.mycompany" required />
-                <div class="example">
-                    <span class="example-icon"></span>
-                    旧包名默认为 com.ruoyi，建议使用反向域名格式
-                </div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary prev-step">
-                    ← 上一步
-                </button>
-                <button type="submit" class="btn btn-success submit-btn">
-                    ✨ 开始替换
-                </button>
-            </div>
-        </form>
-    </div>
+        <div class="form-group">
+            <label for="projectName">
+                <span class="label-icon">📋</span> 项目名
+            </label>
+            <input type="text" id="projectName" placeholder="ruoyi" required/>
+        </div>
 
-    <!-- 全局加载提示 -->
-    <div class="loading-overlay" id="globalLoading">
-        <div class="loading-card">
-            <div class="spinner-large"></div>
-            <h3 id="loadingTitle">正在处理中</h3>
-            <p id="loadingText">正在从 GitHub 下载源码...</p>
-            <div class="loading-progress">
-                <div class="loading-bar">
-                    <div class="loading-progress-bar" id="loadingProgressBar"></div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="packageName">
+                <span class="label-icon">📦</span> 包名
+            </label>
+            <input type="text" id="packageName" placeholder="com.ruoyi" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="artifactId">
+                <span class="label-icon">🔧</span> artifactId
+            </label>
+            <input type="text" id="artifactId" placeholder="ruoyi" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="groupId">
+                <span class="label-icon">🔑</span> groupId
+            </label>
+            <input type="text" id="groupId" placeholder="com.ruoyi" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="siteName">
+                <span class="label-icon">🌐</span> 站点名
+            </label>
+            <input type="text" id="siteName" placeholder="若依管理系统" required/>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary prev-step">
+                上一步
+            </button>
+            <button type="button" class="btn btn-success submit-btn">
+                下载
+            </button>
         </div>
     </div>
 </div>

@@ -8,10 +8,10 @@
 """
 import os
 
-import base
+from app.repo.base import BaseCore
 
 
-class RuoYiCloud(base.BaseCore):
+class RuoYiCloud(BaseCore):
     def start(self):
         self.series = 'RuoYi-Cloud'
         # 查找项目根目录

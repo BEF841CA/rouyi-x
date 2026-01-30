@@ -8,10 +8,10 @@
 """
 import os
 
-import base
+from app.repo.base import BaseCore
 
 
-class RuoYiFast(base.BaseCore):
+class RuoYiFast(BaseCore):
     def start(self):
         self.series = 'RuoYi-fast'
         # 查找项目根目录

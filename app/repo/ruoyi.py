@@ -8,10 +8,10 @@
 """
 import os
 
-import base
+from app.repo.base import BaseCore
 
 
-class RuoYi(base.BaseCore):
+class RuoYi(BaseCore):
     def start(self):
         self.series = 'RuoYi'
         # 查找项目根目录
