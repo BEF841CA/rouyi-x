@@ -16,7 +16,7 @@ uvicorn app.application:application --host 0.0.0.0 --port 8000
 
 ### docker部署
 ```bash
-
+docker run -d --name rouyi-x -p 8000:8000 ghcr.io/bef841ca/rouyi-x
 ```
 
 ### 环境变量配置
