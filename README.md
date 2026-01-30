@@ -7,6 +7,17 @@ ruoyi-x 是一个可以在线一键修改RuoYi框架包名、项目名等的工�
 * 一键修改包名、项目名、配置等
 * 支持docker部署
 
+## 页面展示
+### 选择项目
+![screen1.jpeg](image/screen1.jpeg)
+### 选择标签
+![screen2.jpeg](image/screen2.jpeg)
+### 选择分支
+![screen3.jpeg](image/screen3.jpeg)
+### 修改项目
+![screen4.jpeg](image/screen4.jpeg)
+
+
 ## 部署
 ### 源码部署
 ```bash
