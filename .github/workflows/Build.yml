@@ -5,41 +5,49 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout repository
-        uses: checkout@v4
+        uses: actions/checkout@v4
 
       - name: Read Tag Version
         id: version
-        run: echo version=$(echo "${{ gitea.event.ref }}" | cut -d'/' -f3 | cut -c2-) >> $GITHUB_OUTPUT
+        run: echo version=$(echo "${{ github.event.ref }}" | cut -d'/' -f3 | cut -c2-) >> $GITHUB_OUTPUT
 
       - name: Get Repository Name in Lowercase
         id: name
-        run: echo image_name=$(echo "${{ gitea.repository }}" | tr '[:upper:]' '[:lower:]') >> $GITHUB_OUTPUT
+        run: echo image_name=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]') >> $GITHUB_OUTPUT
 
       - name: Log in to the Container registry
-        uses: login-action@v3
+        uses: docker/login-action@v3
         with:
-          registry: ${{ vars.DOCKER_PUSH_REGISTRY }}
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: metadata-action@v5
+        uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DOCKER_PUSH_REGISTRY }}/${{ steps.name.outputs.image_name }}
+          images: ${{ env.REGISTRY }}/${{ steps.name.outputs.image_name }}
           tags: |
             ${{ steps.version.outputs.version }}
             latest
 
       - name: Build and push Docker image
         id: push
-        uses: build-push-action@v6
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -47,4 +55,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Release
-        uses: action-gh-release@v2
+        uses: softprops/action-gh-release@v2
